@@ -1,0 +1,233 @@
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times,latexsym}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,graphicx,booktabs,tabularx}
+\title{Physics-Grounded Multimodal Reasoning and Generation: Scientific Hallucination Assessment in Static and Dynamic Fracture}
+
+\author{Qinwu Xu, Xiaofu Ma, Yifan Jiang}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Scientific visual reasoning requires language models to distinguish observable evidence from physically admissible but unidentifiable hypotheses. We investigate this distinction using crystallographic fracture planes as structured intermediate representations. Building on qualitative fracture reasoning experiments, we formulate three complementary tasks: plane inference, applicability assessment, and cross-representation consistency. We distinguish global applicability, local applicability, physical invalidity, and insufficient evidence, and propose an applicability-aware generation protocol that conditions scientific explanations on these states. Existing qualitative examples suggest that vision--language models can recognize canonical plane families but struggle with fine-grained indices. We also examine generated fracture sequences of a water-filled glass sphere and a glass bottle impacting rigid surfaces. These sequences exhibit qualitatively plausible fragmentation and temporal progression, but do not establish quantitative physical fidelity. We further specify a controlled counterfactual evaluation protocol to measure unsupported scientific claims, false acceptance, and abstention. Quantitative validation of the proposed protocol remains pending.
+\end{abstract}
+\section{Introduction}
+Multimodal large language models (MLLMs) generate explanations from images and text, but fluent explanations need not be supported by visual evidence or physical laws. Scientific applications make this distinction particularly important: a plausible description can contain an unjustified material property, a spurious numerical value, or an invalid physical representation.
+Fracture geometry provides a useful testbed. In crystalline solids, cleavage may follow crystallographic planes described by Miller indices \citep{cullity2001,anderson2017}. However, a single global plane is not generally appropriate for polycrystalline, amorphous, heterogeneous, or plastically deformed fracture surfaces. Even when a plane exists, its indices may not be identifiable from an isolated projected fragment.
+We study whether MLLMs can generate scientific explanations that respect both physical applicability and evidential sufficiency. Our starting point is a latent-guided fracture reasoning framework, previously described in \citep{xu2026miller}. The present draft extends that framework toward hallucination assessment through an explicit distinction between invalid and underdetermined hypotheses, counterfactual questions, and claim-level evaluation.
+Beyond static interpretation, we investigate whether generated fracture sequences exhibit plausible physical progression and whether scientific descriptions of those sequences avoid unsupported causal or quantitative claims. Static reasoning and dynamic generation are complementary tests of physical grounding, not necessarily outputs of the same model.
+
+Our proposed contributions are: (1) a scientific hallucination taxonomy separating physical validity from evidence sufficiency; (2) an applicability-aware structured generation protocol; (3) a controlled evaluation design combining geometric and material-specific counterfactuals; and (4) a qualitative analysis of dynamic fracture generation with a proposed temporal grounding evaluation. Existing qualitative observations motivate these contributions; the new quantitative experiments are not yet completed.
+\section{Related Work}
+\paragraph{Multimodal reasoning.} Contrastive visual-language learning and visual instruction tuning enable cross-modal understanding \citep{radford2021,liu2023}. Multimodal reasoning systems can produce explanations and interact with visual evidence \citep{yang2023,gpt4,gemini}. Prior work on preference optimization and OCR-aware reasoning motivates grounding generated claims in observations \citep{xu2026,xuetal2026}. Unlike general visual recognition, our task requires deciding whether the requested scientific representation is meaningful and identifiable.
+\paragraph{Crystallographic fracture.} Miller indices characterize lattice-plane orientation \citep{cullity2001}. Orientation-dependent cleavage is important in single-crystal fracture, including silicon indentation \citep{skalka2021,wasmer2005}. Directional phase-field formulations likewise model anisotropic fracture \citep{clayton2015,shanthraj2017}. These physical models motivate our structured constraints, but our objective is evaluating generated scientific language, not replacing numerical fracture simulation.
+\section{Physical Representation and Task Formulation}
+Let $x=(I,T,Q)$ denote a visual observation, available material and coordinate context, and a question. Let $z=(h,k,l)$ denote a candidate crystallographic plane. In a cubic lattice with known axes, a plane can be represented in normalized coordinates by
+\begin{equation} hx+ky+lz=d. \end{equation}
+Here the coordinate symbols in the equation denote spatial coordinates, and $d$ is the plane offset. For a general lattice, the plane normal is defined through the reciprocal lattice rather than directly by the Cartesian vector $(h,k,l)$.
+The intersection with a unit cube yields a polygon dependent on orientation and offset. Projection and viewpoint further affect its appearance. Consequently, polygon shape alone does not establish a unique Miller index.
+\paragraph{Applicability and identifiability.} We define four response states $a\in\{G,L,N,U\}$: globally applicable and identifiable ($G$), locally applicable but no justified global plane ($L$), physically inapplicable ($N$), and insufficient evidence ($U$). These are response states, not exhaustive material classes. In particular, crystalline materials may belong to $U$ when lattice orientation is unavailable.
+\paragraph{Latent inference.} For identifiable global cases, predict $\hat z=\arg\max_z p(z\mid x,a=G)$. Symmetry-equivalent families should be accepted when the question requests a family rather than an oriented plane.
+\paragraph{Consistency.} For a fragment $I_f$ and candidate plane rendering $I_p$, predict compatible, incompatible, or underdetermined. Compatibility does not imply uniqueness.
+\section{Scientific Hallucination Taxonomy}
+We distinguish errors in observations, physical assumptions, inference, and generated claims. A claim can be physically possible yet unsupported by the available evidence.
+\begin{table}[t]\small\centering
+\begin{tabularx}{\columnwidth}{lX}\toprule
+Category & Example \\ \midrule
+Visual & Invented planar facet \\
+Geometric & Incorrect index under known axes \\
+Material & Unsupported lattice assignment \\
+Physical & Invalid cleavage mechanism \\
+Applicability & Global index for multi-grain fracture \\
+Overgeneration & Exact index despite ambiguity \\
+Temporal & Unsupported event order or motion \\
+\bottomrule\end{tabularx}
+\caption{Proposed claim-level error taxonomy.}\label{tab:taxonomy}
+\end{table}
+Physical invalidity and insufficient evidence must be annotated separately. For instance, a known amorphous glass has no conventional crystal-lattice Miller index, whereas a crystalline fragment with unknown orientation may have a valid local index that cannot be recovered from the image.
+\section{Applicability-Aware Generation}
+We propose factorizing the response into an applicability decision, a structured hypothesis, and a grounded explanation $y$:
+\begin{equation}
+ p(a,z,y\mid x)=p(a\mid x)p(z\mid x,a)p(y\mid x,a,z).
+\end{equation}
+For $N$ and $U$, the system may return a null index; for $L$, it may describe local facets without asserting a global index. A local index should only be emitted if the relevant grain orientation and evidence support it.
+The proposed inference protocol first extracts observable geometry and available metadata, then assesses applicability and identifiability, then proposes an index or abstains. Finally, it verifies the proposed claims against geometric constraints and material context. This is an inference-time protocol; no new trained gating model is claimed.
+\paragraph{Geometric verification.} In controlled synthetic cases, the verifier can intersect candidate planes with cube edges and compare the resulting polygon under the known rendering transformation. If camera or offset is unknown, multiple hypotheses may remain compatible; the verifier must not turn ambiguity into a negative label.
+\paragraph{Language output.} We request a structured response containing observed evidence, applicability state, candidate index or null, explanation, and limitations. This separates directly visible properties from inferred physical mechanisms.
+\section{Experimental Design}
+\subsection{Existing qualitative evaluation}
+The original experiments use few-shot prompting on synthetic fragments, paired 2D--3D configurations, and candidate real-world fracture scenarios. The completed demonstrations discussed here are restricted to synthetic geometry. The prompt asks for a plane index or family and an explanation based on geometry. The supplied source does not report sample counts, exact model versions, decoding settings, or aggregate scores; these must be recovered before a reproducible submission.
+\begin{figure}[t]\centering\includegraphics[width=0.95\linewidth]{figure1.png}\caption{Latent-guided reasoning framework: visual input, candidate plane hypotheses, applicability decision, and geometric interpretation. Reused from the fracture preprint.}\label{fig:cube}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.75\linewidth]{figure2.png}\caption{Labeled synthetic polygon examples from selected cube--plane intersections. Shape alone does not uniquely identify a plane.}\label{fig:fragments}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.95\linewidth]{Picture3.png}\caption{Representative low-index plane orientations in cubic coordinates. The illustration shows plane configurations, not the complete matched/mismatched evaluation pairs.}\label{fig:pairs}\end{figure}
+\subsection{Proposed controlled benchmark}
+Generate exact cube-plane intersections with primitive integer indices, varying offset and camera pose. Include canonical and higher-index planes, matched and mismatched pairs, and ambiguous observations. Retain metadata for ground truth but expose only the context specified by each evaluation condition. Split by underlying geometry before rendering variants to avoid leakage.
+For real images, record material provenance and whether crystallographic orientation or fracture mechanism is independently established. Do not infer ground truth solely from appearance. Where metadata is missing, label the relevant inference as underdetermined.
+\begin{table}[t]\small\centering
+\begin{tabularx}{\columnwidth}{Xr}\toprule
+Proposed evaluation stratum & Target $N$\\\midrule
+Canonical planes & 300\\
+Higher-index planes & 300\\
+Matched pairs & 200\\
+Mismatched pairs & 200\\
+Polycrystalline, amorphous, heterogeneous, ductile & 400\\
+Insufficient evidence & 200\\\midrule
+Total (planned) & 1600\\\bottomrule\end{tabularx}
+\caption{Planning targets, not collected sample counts.}\end{table}
+\subsection{Counterfactual prompts and baselines}
+For the same image, compare neutral questions with misleading premises, such as asking for a specific Miller index of known amorphous glass. Include context removal and incorrect candidate indices. Evaluate direct prompting, reasoning prompting, physical-prior prompting, applicability-aware prompting, and the full protocol with verification. Keep model versions, decoding settings, and test cases fixed across conditions. Record prompt templates and output parsing rules.
+\subsection{Physics-guided multimodal in-context prompting}
+We propose supplying a textual physical prior $P$ and labeled visual demonstrations $\mathcal D=\{(I_i,z_i,r_i)\}_{i=1}^{K}$, where $I_i$ is a reference rendering, $z_i$ its index, and $r_i$ its intercept explanation. Figure~\ref{fig:prompt_examples} shows three canonical demonstrations. The reference image is passed as an actual visual input, followed by the unlabeled target image(s) and task instruction. With $C=(x,P,\mathcal D)$, the response distribution becomes $p(a,z,y\mid C)=p(a\mid C)p(z\mid a,C)p(y\mid a,z,C)$. The demonstrations are not a closed candidate set.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{miller_prompt_examples.png}
+\caption{Proposed visual in-context demonstrations for canonical cubic planes. The shaded polygons are intersections at $d=1$; axis intercepts illustrate the reciprocal-intercept rule. The reference is supplied to the model alongside the target image.}
+\label{fig:prompt_examples}
+\end{figure}
+\paragraph{System prompt (proposed).} \emph{You are a physics-grounded multimodal reasoning system. In normalized cubic coordinates, a plane satisfies $hx+ky+lz=d$. Miller indices are proportional to reciprocal axis intercepts; reduce to a primitive integer ratio for orientation inference. Zero indices indicate parallel axes; negative indices indicate signed orientations. Examine the attached labeled (100), (110), and (111) examples and their intercepts. These are representative, not exhaustive: infer unseen higher and signed indices using the physical rule. For the target image(s), extract observable facets, edges, vertices, axes and intercepts. Assess global or local applicability, physical inapplicability, or insufficient evidence. Infer candidate indices only when supported, and verify compatibility with the observed geometry or paired 2D--3D representation. Account for offset, viewpoint and unknown lattice orientation; polygon shape alone does not uniquely identify an index. Return observable evidence, applicability, candidate indices or null, compatibility, explanation and uncertainty. Do not invent material properties, mechanisms or numerical quantities.}
+\paragraph{Prompt ablation.} Compare direct inference, textual physical priors alone, visual demonstrations alone, combined textual and visual priors, and the full applicability-aware verification protocol. Hold target images and decoding settings fixed. Evaluate canonical demonstrations against held-out higher-index and signed orientations, without exposing target labels or equivalent renderings in the reference set. These prompt configurations are proposed rather than completed experiments.
+\subsection{Metrics}
+Report applicability macro-F1, index accuracy on identifiable cases, consistency accuracy, and coverage. Define physical hallucination rate as the fraction of assessed scientific claims that contradict established physical constraints. Separately report unsupported-claim rate, including unjustified precision. False acceptance is the fraction of invalid or underdetermined requests receiving an unjustified definitive answer; report these two strata separately. False rejection is the fraction of identifiable requests incorrectly refused. Risk--coverage curves should reveal whether abstention improves reliability without excessive refusal. Use paired bootstrap intervals grouped by underlying image and report annotation agreement for claim labels.
+\section{Existing Observations and Planned Results}
+\subsection{Synthetic and cross-representation observations}
+In the original canonical examples, the model associates square fragments with face-aligned planes and triangular fragments with diagonal planes, and rejects selected incompatible fragment--plane pairs. These observations demonstrate plausible responses for the chosen configurations, not unique recovery from arbitrary polygon shapes. Figure~\ref{fig:pairs} provides the reference low-index configurations. The source reports higher-index examples such as $(112)$ and $(102)$; Figure~\ref{fig:higher} illustrates selected signed $(111)$ and $(102)$ orientations. These examples expose difficulty in recovering precise indices; qualitative descriptions of asymmetry do not establish exact orientation.
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{Picture4.png}\caption{Selected signed (111)-type and (102)-type plane orientations in cubic coordinates.}\label{fig:higher}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.98\linewidth]{Picture10.png}\caption{Original three-regime illustration: inference, partial applicability, and rejection. The proposed fourth response state, insufficient evidence, is not depicted.}\label{fig:regimes}\end{figure}
+\subsection{Material-dependent scope}
+Ceramic, concrete, ductile metal and amorphous glass are relevant candidate material regimes for future static tests. They motivate local applicability, rejection and uncertainty, but no documented model-output demonstrations are available for these material examples in the present evaluation. We therefore do not report material-specific VLM performance.
+\subsection{Quantitative comparison (pending)}
+\begin{table}[t]\small\centering
+\begin{tabular}{lrrr}\toprule
+Method & F1 & PHR & FAR\\\midrule
+Direct & -- & -- & --\\
+Reasoning & -- & -- & --\\
+Physical prior & -- & -- & --\\
+Applicability & -- & -- & --\\
+Full protocol & -- & -- & --\\\bottomrule\end{tabular}
+\caption{Planned comparison; dashes indicate unmeasured results. PHR: physical hallucination rate; FAR: false acceptance rate.}\end{table}
+The central hypothesis is that applicability-aware generation reduces invalid and unsupported claims while retaining accuracy on identifiable cases. This hypothesis is not established by the existing qualitative results. The planned ablation should isolate the effect of physical context, gating, and verification, including cases where metadata is deliberately withheld.
+
+\section{Dynamic Fracture Generation and Physical Grounding}
+\label{sec:dynamic}
+\paragraph{Task formulation.} Static fracture interpretation asks whether a scientific hypothesis is supported by a visual observation. Dynamic generation instead asks whether a sequence of frames $V=(I_1,\ldots,I_T)$ is consistent with a specified material, object geometry and loading scenario $c$. We distinguish visual plausibility of $V$ from the factual grounding of a language explanation $y$ conditioned on $(V,c)$. A visually plausible sequence does not establish that its underlying mechanics are correct.
+
+\paragraph{Existing generation experiments.} The original experiments prompt generative multimodal systems to synthesize brittle fracture under impact conditions. Two examples are retained here: a water-filled glass sphere impacting a rigid surface and a glass bottle dropped onto concrete. These are generated sequences, not recorded physical experiments or numerical simulations. The original source does not specify the generator version, complete prompts, or sampling settings; these should be recovered for reproducibility.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\linewidth]{glass_ball_fracture.png}
+\caption{Generated fracture progression of a water-filled glass sphere impacting a rigid surface. The montage illustrates approach, impact-associated fragmentation and subsequent debris dispersion. Frame annotations are reproduced from the source and are not calibrated physical time measurements.}
+\label{fig:glassball}
+\end{figure*}
+
+\paragraph{Water-filled glass sphere.} Figure~\ref{fig:glassball} illustrates a transition from an intact sphere to fragmentation and outward dispersion of debris. The original qualitative analysis describes localized fracture near the contact region, rapid fragmentation and loss of structural integrity. These observations are compatible with brittle impact failure, but the frames alone do not establish crack-tip velocity, strain rate, elastic energy release or the coupled fluid--structure dynamics. Water and glass fragments should not be assigned distinct trajectories without sufficient visual evidence.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{glass_bottle_fracture.png}
+\caption{Generated glass bottle fracture sequence showing approach, contact, fragmentation and debris after impact on concrete. The sequence is illustrative rather than a validated fracture simulation.}
+\label{fig:glassbottle}
+\end{figure}
+
+\paragraph{Glass bottle.} Figure~\ref{fig:glassbottle} shows an elongated glass object approaching a rigid surface, followed by fragmentation and an asymmetric debris distribution. The original analysis relates these observations to localized impact and the differing geometry of the bottle. While wall curvature and contact conditions can influence stress concentration, the sequence does not provide stress fields or sufficient evidence to identify the precise initiation mechanism. Both examples concern amorphous glass and therefore do not justify a crystallographic cleavage index.
+
+\paragraph{Proposed temporal hallucination evaluation.} To connect dynamic generation to language grounding, we propose asking VLMs to describe the visible event order, distinguish observations from inferred mechanisms, and reject unsupported numerical or causal claims. Counterfactual prompts can assert fragmentation before contact, a specific crack speed, or a crystallographic cleavage plane. Such claims should be checked against the available frames and material context rather than accepted from the question. Frame-order perturbations provide an additional controlled test. The following rubric is proposed, not an evaluated result.
+\begin{table}[t]
+\small\centering
+\begin{tabularx}{\columnwidth}{lX}\toprule
+Criterion & Assessment \\\midrule
+Event order & Agreement with visible sequence \\
+Temporal continuity & Unsupported disappearance or reappearance \\
+Material grounding & Consistency with supplied material \\
+Causal grounding & Distinguish evidence from mechanism \\
+Overgeneration & Unsupported speed, stress or energy \\
+\bottomrule\end{tabularx}
+\caption{Proposed dynamic grounding rubric. Physical fidelity requires independent reference data.}
+\label{tab:dynamic}
+\end{table}
+For future quantitative evaluation, report event-order accuracy and unsupported-claim rate on annotated sequence descriptions, separately from visual plausibility ratings. Conservation of mass, momentum and energy cannot be verified from these montages alone. The two existing examples motivate this protocol but do not establish mitigation effectiveness or generalization.
+
+\section{Discussion}
+Figure~\ref{fig:regimes} summarizes the original three regimes; the proposed protocol additionally separates insufficient evidence from physical invalidity.
+A scientifically grounded model should distinguish the existence of a physical representation from its recoverability. A planar facet can be geometrically observable without a known crystallographic reference frame. Conversely, a valid local plane does not justify a global description of a heterogeneous fracture. This distinction motivates selective generation rather than forced classification.
+The proposed benchmark also separates physically contradictory statements from claims that are merely unsupported. The latter may be true in the world but are not justified by the input. Both matter in precision-demanding scientific applications. Evaluation should penalize overconfident answers without rewarding blanket abstention. The dynamic examples extend this principle to temporal scientific descriptions: plausible fragmentation does not license precise claims about forces, energy or crack propagation. Static and dynamic tasks therefore share the need to separate observable evidence, admissible physical hypotheses and unsupported specificity.
+\section{Conclusion}
+We formulate scientific hallucination assessment using crystallographic fracture reasoning as a controlled multimodal domain. Existing qualitative observations motivate an applicability-aware protocol that distinguishes global and local representations, invalid premises, and insufficient evidence. The proposed counterfactual benchmark and claim-level metrics provide a route to testing whether structured physical priors improve scientific language generation. The generated glass sphere and bottle sequences further illustrate qualitatively plausible brittle fracture progression and motivate temporal grounding tests. Quantitative validation remains necessary before claiming mitigation effectiveness.
+\section*{Limitations}
+The existing evidence is qualitative, and the proposed benchmark and mitigation experiments have not yet been executed. Synthetic cube intersections are not physical fracture simulations. The two generated fracture sequences lack calibrated physical measurements and independent simulation or experimental references; their qualitative plausibility is not proof of physical accuracy. The proposed real-material static evaluation has not been completed; material metadata, lattice orientation and fracture mechanisms need independent verification. Results in this narrow domain cannot establish general scientific reasoning ability. Image provenance, permissions, model versions, prompts, and annotation procedures must be documented before submission.
+
+\section*{AI Usage Declaration}
+Generative AI tools were used to assist with manuscript
+organization, literature review, and language editing. The authors are responsible for the scientific methodology, experimental results, interpretation, and final manuscript content.
+
+\begin{thebibliography}{99}
+\bibitem[Cullity and Stock(2001)]{cullity2001}
+B. D. Cullity and S. R. Stock (2001).
+\textit{Elements of X-Ray Diffraction} (3rd ed.). Prentice Hall.
+
+\bibitem[Anderson(2017)]{anderson2017}
+T. L. Anderson (2017).
+\textit{Fracture Mechanics: Fundamentals and Applications} (4th ed.). CRC Press.
+
+\bibitem[Radford et al.(2021)]{radford2021}
+A. Radford, J. W. Kim, C. Hallacy, et al. (2021).
+Learning Transferable Visual Models From Natural Language Supervision.
+\textit{International Conference on Machine Learning (ICML)}.
+
+\bibitem[Liu et al.(2023)]{liu2023}
+H. Liu, C. Li, Q. Wu, and Y. J. Lee (2023).
+Visual Instruction Tuning.
+\textit{Advances in Neural Information Processing Systems (NeurIPS)}.
+
+\bibitem[Xu(2026)]{xu2026} Q. Xu (2026).
+Reducing Hallucination in Vision-Language Models via Stage-wise Preference Optimization under Distribution Shift. arXiv:2605.16411 [cs.CV]
+
+\bibitem[Yang et al.(2023)]{yang2023}
+J. Yang, L. Gao, K. Li, et al. (2023).
+MM-ReAct: Prompting ChatGPT for Multimodal Reasoning and Action.
+\textit{International Conference on Machine Learning (ICML)}.
+
+\bibitem[Xu et al.(2026)]{xuetal2026} Q. Xu, Y. Jiang, H. Ren (2026).
+Multilingual OCR-Aware Fine-Tuning and Prompt-Guided Chain-of-Thought Reasoning for Multimodal Large Language Models.
+\textit{arXiv:2605.16409 [cs.CV]}
+
+\bibitem[OpenAI(2023)]{gpt4}
+OpenAI (2023).
+GPT-4 Technical Report.
+\textit{arXiv:2303.08774}.
+
+\bibitem[Google DeepMind(2023)]{gemini}
+Google DeepMind (2023).
+Gemini: A Family of Highly Capable Multimodal Models.
+\textit{arXiv:2312.11805}.
+
+\bibitem[Skalka and Kotoul(2021)]{skalka2021}
+P.~Skalka and M.~Kotoul.
+\newblock Determination of Mechanical and Fracture Properties of Silicon Single Crystal from Indentation Experiments and Finite Element Modelling.
+\newblock \emph{Materials}, 14(22):6864, 2021.
+
+\bibitem[Wasmer et al.(2005)]{wasmer2005}
+K.~Wasmer, C.~Ballif, R.~Gassilloud, C.~Pouvreau, R.~Rabe, J.~Michler, J.-M. Breguet, J.-M. Solletti, A.~Karimi, and D.~Schulz.
+\newblock Cleavage Fracture of Brittle Semiconductors from the Nanometre to the Centimetre Scale.
+\newblock \emph{Advanced Engineering Materials}, 7(5):309--317, 2005.
+
+\bibitem[Clayton and Knap(2015)]{clayton2015}
+J.~D. Clayton and J.~Knap.
+\newblock Phase field modeling of directional fracture in anisotropic polycrystals.
+\newblock \emph{Computational Materials Science}, 98:158--169, 2015.
+
+\bibitem[Shanthraj et al.(2017)]{shanthraj2017}
+P.~Shanthraj, B.~Svendsen, L.~Sharma, F.~Roters, and D.~Raabe.
+\newblock Elasto-viscoplastic phase field modelling of anisotropic cleavage fracture.
+\newblock \emph{Journal of the Mechanics and Physics of Solids}, 99:19--34, 2017.
+
+
+% \bibitem[Xu et al.(2026)]{xu2026miller}
+% Q. Xu, X. Ma, and Y. Jiang. 2026.
+% Miller-Index-Based Latent Crystallographic Fracture Plane Reasoning and Generation with Vision-Language Models.
+% \textit{arXiv:2605.20416}.
+
+
+\end{thebibliography}
+\end{document}
