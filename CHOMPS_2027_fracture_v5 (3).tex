@@ -1,0 +1,378 @@
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times,latexsym}
+\usepackage[T1]{fontenc}
+\usepackage{cuted}
+\usepackage{capt-of}
+\usepackage{amsmath,amssymb,graphicx,booktabs,tabularx}
+\title{Physics-Grounded Multimodal Reasoning and Generation: Scientific Hallucination Assessment in Static and Dynamic Fracture}
+
+\author{Qinwu Xu, Xiaofu Ma, Yifan Jiang}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Scientific visual reasoning requires language models to distinguish observable evidence from physically admissible but unidentifiable hypotheses. We investigate this distinction using crystallographic fracture planes as structured intermediate representations. Building on qualitative fracture reasoning experiments, we formulate three complementary tasks: plane inference, applicability assessment, and cross-representation consistency. We distinguish global applicability, local applicability, physical invalidity, and insufficient evidence, and propose an applicability-aware generation protocol that conditions scientific explanations on these states. Existing qualitative examples suggest that vision--language models can recognize canonical plane families but struggle with fine-grained indices. We also examine generated fracture sequences of a water-filled glass sphere and a glass bottle impacting rigid surfaces. These sequences exhibit qualitatively plausible fragmentation and temporal progression, but do not establish quantitative physical fidelity. We further specify a controlled counterfactual evaluation protocol to measure unsupported scientific claims, false acceptance, and abstention. Quantitative validation of the proposed protocol remains pending.
+\end{abstract}
+
+\section{To Do}
+
+% case 1: https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm\_source=chatgpt.com
+
+\subsubsection{Edge-On Impact Simulation of Ceramics}\label{edge-on-impact-simulation-of-ceramics}
+
+In this section, the numerical experiments on the edge-on impact of ceramic plates will be carried out. The contact algorithm in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#sec2dot5dot3-materials-16-04050}{Section 2.5.3} will be used to describe the interaction between the cylindrical projectile and the target plate. Further, the artificial viscosity introduced in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#sec2dot5dot2-materials-16-04050}{Section 2.5.2} will be used to prevent unphysical oscillations or interpenetration in the impact zone. \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f013}{Figure 13} shows the computational model of a ceramic plate under edge-on impact. The configuration of the target plate is 70\(\times\)70\(\times\)10 mm3. In addition, the projectile is a cylinder with a diameter of 16 mm and a height of 21 mm. The target plate is the Al2O\textsubscript{3} ceramic, and its material parameters and JH2 constitutive model parameters are the same as those in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#sec3dot1-materials-16-04050}{Section 3.1}. For simplicity, the projectile is regarded as a rigid body with density \(\rho\)=8060 kg/m3. With the same set-up as in the reference, free boundary conditions are applied to the ceramic target plate, and the impact velocity of the projectile is \(v\)=85 m/s. In the PD simulation, the grid size of the discretization is \(\Delta\)\(x\)=1.0\(\times\)\(10^{-3}\) m, and the horizon factor is chosen as \(m\)=3.0. The time step size used in the edge-on impact is \(\Delta\)\(t\)=2.0\(\times\)\(10^{-9}\) s. The computational model is discretized into 55,510 material points.
+
+\href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f014}{Figure 14} shows the fracture patterns of the Al\textsubscript{2}O\textsubscript{3} ceramic plate under edge-on impact in the experiment and numerical simulation. Comparing the PD simulation result with the fracture image provided by Strassburger {[}\href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#B57-materials-16-04050}{57}{]}, good agreement can be found. Specifically, both the delta-like fracture pattern and the radial crack propagation paths in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f014}{Figure 14}a can be observed from the simulation result in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f014}{Figure 14}b. In addition, the simulation result shows the characteristics of the fragmentation of the target edge and the semi-elliptical damage zone, which is very similar to the fracture behavior observed in the experiment. The results demonstrate that the modified BA-NOSB PD model can accurately reproduce the fracture pattern and the crack propagation paths of the Al\textsubscript{2}O\textsubscript{3} ceramic plate under the edge-on impact experiment.
+
+\begin{center}
+\includegraphics[width=1.0\linewidth]{case1.jpg}
+\end{center}
+
+Fig2. case1.jpg
+
+The damage evolution and crack propagation of the Al\textsubscript{2}O\textsubscript{3} ceramic plate during edge-on impact are shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f015}{Figure 15}. After the cylindrical projectile hit the ceramic target plate, it began to penetrate the ceramic plate. At \(t\)=2.0 \(\mu\)s, the left edge of the target plate began to display gear-shaped damage, as shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f015}{Figure 15}a. At \(t\)=4.0 \(\mu\)s, the damage of the target plate further increases and extends along the impact direction, as shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f015}{Figure 15}b. With the continuous action of the projectile, five radial cracks form on the edge of the target plate, as shown at the instant of \(t\)=6.0 \(\mu\)s in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f015}{Figure 15}c. At \(t\)=8.0 \(\mu\)s, a triangular crack extension zone and a semicircular damage zone are formed on the target plate, as shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f015}{Figure 15}d. Subsequently, at \(t\)=8.8 \(\mu\)s, a corrugated damage zone and radial cracks are formed on the edge of the target plate, as shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f015}{Figure 15}e. Finally, with the weakening of the projectile action, the damage tended to be stable, and a fracture pattern similar to an alluvial delta is formed on the front surface of the ceramic plate, as shown at the instant of \(t\)=9.7 \(\mu\)s in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f015}{Figure 15}f.
+
+Case 2:
+
+\subsubsection{Normal Impact Simulation of Ceramics}\label{normal-impact-simulation-of-ceramics}
+
+In this section, the normal impact experiment on a ceramic plate will be numerically modeled. The contact algorithm in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#sec2dot5dot3-materials-16-04050}{Section 2.5.3} will be used to describe the interaction of the spherical projectile with the target plate. The artificial viscosity in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#sec2dot5dot2-materials-16-04050}{Section 2.5.2} is incorporated to avoid unphysical oscillations or interpenetration in the impact area. The computational model of the normal impact simulation for the ceramic plate is shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f016}{Figure 16}. The configuration of the ceramic plate is 70\(\times\)70\(\times\)9 mm3. Moreover, the projectile is a sphere with a diameter of 6.4 mm. The material of the target plate is the Al\textsubscript{2}O\textsubscript{3} ceramic with the same material parameters as in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#sec3dot1-materials-16-04050}{Section 3.1}. The JH2 constitutive model parameters of the Al\textsubscript{2}O\textsubscript{3} ceramic are shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-t001}{Table 1}. For simplicity, the projectile material is set to be rigid, and its density is \(\rho\)=7800 kg/m3. With the same set-up as in the reference, the ceramic plate is subjected to free boundary conditions, and the impact velocity of the projectile is \(v\)=200 m/s. In the PD simulation, the grid size of the discretization is \(\Delta\)\(x\)=1.0\(\times\)\(10^{-3}\) m, and the horizon factor is chosen as \(m\)=3.0. The time step size in normal impact is \(\Delta\)\(t\)=2.0\(\times\)\(10^{-9}\) s. The model is discretized into 47,256 material points.
+
+\href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f017}{Figure 17} shows the fracture patterns of the upper surface of the Al\textsubscript{2}O\textsubscript{3} ceramic plate under normal impact obtained from the experiment and PD simulation. Comparing the experimental result {[}\href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#B58-materials-16-04050}{58}{]} and the simulation result, good agreement can be found on the fracture patterns. The PD simulation result in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f017}{Figure 17}b accurately reproduces the eight radial cracks along the 0\(^{\circ}\), 45\(^{\circ}\), 90\(^{\circ}\), 135\(^{\circ}\), 180\(^{\circ}\), 225\(^{\circ}\), 270\(^{\circ}\), and 315\(^{\circ}\) directions of the ceramic plate in the experiment. In addition, the PD simulation result can accurately reproduce the characteristics of fragmentation and collapse in the center of the plate caused by projectile penetration. These fracture characteristics agree well with the experimental result in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f017}{Figure 17}b. The results show that the modified BA-NOSB PD model can accurately capture the crack propagation paths of the Al\textsubscript{2}O\textsubscript{3} ceramic plate under normal impact, demonstrating the ability to model impact problems and the reliability of damage prediction. In particular, the established model does not take into account the asymmetric factors that may exist in the experiment such as the projectile deflection and the microscopic defects of the sample. Therefore, the PD simulation result does not show the asymmetry of the crack path in the experiment.
+
+\begin{center}
+\includegraphics[width=1.0\linewidth]{case2.jpg}
+\end{center}
+
+Fig2. case2.jpg
+
+Comparison of fracture patterns for the Al
+
+Al\textsubscript{2}O\textsubscript{3} ceramic plate under normal impact. (\textbf{a}) Experimental {[}\href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#B58-materials-16-04050}{58}{]}; (\textbf{b}) PD simulation.
+
+The damage evolution and crack growth of the Al2O3
+
+ceramic plate during normal impact are shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f018}{Figure 18}. With the impact of the steel ball on the ceramic plate, the compression stress waves generated in the center of the target constantly spread to the boundary surfaces. The compression stress waves are reflected as the tensile stress waves once they have propagated to a free surface. When \(t\)=2.0 \(\mu\)s, the upper surface of the target forms a square damage zone. Two circumferential cracks appear in the central damage zone, and cracks initiate outward at the boundary of the damage zone, as shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f018}{Figure 18}a. With the continuous propagation, reflection, and overlapping of stress waves, the square damage zone on the target surface expands further, and a collapse is observed in the central area of the target. In addition, four radial cracks along the directions of 45\(^{\circ}\), 135\(^{\circ}\), 225\(^{\circ}\), and 315\(^{\circ}\) begin to form, as shown at the instant of \(t\)=4.0 \(\mu\)s in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f018}{Figure 18}b. When \(t\)=6.0 \(\mu\)s, an obvious circular crack forms in the center of the target, and four radial cracks along the directions of 0\(^{\circ}\), 90\(^{\circ}\), 180\(^{\circ}\), and 270\(^{\circ}\) initiate and grow outward, as seen in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f018}{Figure 18}c. Under the continuous penetration of the steel projectile, the crack tips along the directions of 0\(^{\circ}\), 90\(^{\circ}\), 180\(^{\circ}\), and 270\(^{\circ}\) grow outward, and then obvious radial cracks form, as shown at the instant of \(t\)=8.0 \(\mu\)s in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f018}{Figure 18}d. When \(t\)=8.8 \(\mu\)s, four radial cracks form on the upper surface of the target along the directions of 0\(^{\circ}\), 90\(^{\circ}\), 180\(^{\circ}\), and 270\(^{\circ}\), as shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f018}{Figure 18}e. Finally, the damage tends to be stable at \(t\)=9.5 \(\mu\)s, while the center of the target produces fracture behaviors such as fragmentation and collapse, and the top surface produces eight radial cracks along the 0\(^{\circ}\), 45\(^{\circ}\), 90\(^{\circ}\), 135\(^{\circ}\), 180\(^{\circ}\), 225\(^{\circ}\), 270\(^{\circ}\), and 315\(^{\circ}\) directions, as shown in \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC10254440/?utm_source=chatgpt.com\#materials-16-04050-f018}{Figure 18}f.
+
+3. Case 3:
+
+Zhang, H., Liu, Y., Liu, L., Lai, X., Liu, Q., \& Mei, H. (2022). \textbf{Implementation of OpenMP Parallelization of Rate-Dependent Ceramic Peridynamic Model.}
+
+% https://file.techscience.com/uploads/attached/file/20220718/20220718135850\_33848.pdf?utm\_source=chatgpt.com
+
+\begin{itemize}
+\item
+  \textbf{Figure 11:} The comparison between simulation and experimental results.
+\item
+  \textbf{Journal:} Computer Modeling in Engineering \& Sciences (CMES), 2022, Vol. 133, No. 1.
+\item
+  \textbf{Page:} 210.
+\item
+  \textbf{Material:} Silicon carbide (SiC) ceramic.
+\item
+  \textbf{Loading:} Impact by a steel cylinder.
+\end{itemize}
+
+The simulation of dynamic response of SiC ceramic plates, with three different particle sizes under the impact of steel columns, was conducted with number of threads (N), ranging from 1 to 32 in a CPU model of dual-socket Intel(R) Xeon(R) Gold 6248R CPU@3.00 GHz. The OpenMP fortran90 code was compiled by using the Intel Parallel Studio XE 2013. The model size is shown in Fig. 10, where a steel column impacts a silicon carbide (SiC) ceramic target plate (60 \(\times\) 60 \(\times\) 8 mm3 ), and normal fixed constraints were applied on the backside of the plate. The material properties of SiC and steel used in this paper are shown in Table 2. The elastic compressive limit and the compression limit are specified as se=0.0061 and s1=0.0213. The diameter of the rigid steel column is 10 mm, the height is 15 mm and the mass is 9.3 g. Herein, the steel column is modeled to impact on the SiC ceramic plates at different initial speeds, and four different impact speeds of 175 m/s, 300 m/s, 400 m/s and 500 m/s are chosen, respectively. The spacing \(\Delta\)x of three sizes of particles is 1 mm, 0.67 mm and 0.5 mm, respectively, and the size of particles corresponding to the model is 60 \(\times\) 60 \(\times\) 8, 90 \(\times\) 90 \(\times\) 12 and 120 \(\times\) 120 \(\times\) 16. The neighborhood horizon was set as 3 times of particle spacing, i.e., \(\delta\) = 3x. The unit time step was t = 2.0 \(\times\) \(10^{-9}\) s and the total calculation time step was 12,000 steps.
+
+\begin{center}
+\includegraphics[width=0.85\linewidth]{case3.jpg}
+\end{center}
+
+Fig3. case3.jpg
+
+In order to verify the correctness of the calculation results, the serial results of three examples are compared with the parallel results. The results reveal that the parallel results are consistent with the serial results, and the parallel calculations do not affect the accuracy. The simulation results are compared with the experimental results {[}34{]}, as shown in Fig. 11. Example 1, example 2 and example 3 correspond to three different particle size models of 60 \(\times\) 60 \(\times\) 8, 90 \(\times\) 90 \(\times\) 12 and 120 \(\times\) 120 \(\times\) 16 210 CMES, 2022, vol.133, no.1 at an impact velocity of 175 m/s. The simulation results of the same particle model (90 \(\times\) 90 \(\times\) 12) at different initial speeds are compared, as shown in Table 3.
+
+\begin{center}
+\includegraphics[width=1.0\linewidth]{sci_material_property.jpg}
+\end{center}
+
+impacted by the steel column, the simulation results of three examples are consistent with the experimental results. On the other hand, it can be seen that the smaller particle spacing corresponds to denser damage crack and more accurate description of the crack path. It can be seen from the damage of ceramic plate under impact at different speeds in Table 3 that with the increase of impact speed of steel column, Table 3 shows that the conical and radial crack of ceramics at low to high impact velocity can be well captured, with the propagation and superposition degree of stress wave in the ceramic plate increases, the damage range on the back of ceramic plate increases in turn, the damage degree is more serious, and the radial cracks on the top and back are more dense. In order to compare the calculation efficiency, the concepts of speed-up ratio and parallel efficiency {[}35{]} in parallel computing are used to compare the improvement of calculation efficiency. For the overall program, the number of threads performing parallel part of the work is N, and the potential speed-up can be given by Eq. (18):
+
+\section{Prompt templates for dynamic fracture generation}\label{prompt-templates-for-dynamic-fracture-generation}
+
+Run each case with the same generator, initial geometry, camera, duration and sampling settings. Use the published fracture images and damage maps only for evaluation, not as generation inputs.
+
+\subsection{Baseline prompt (all cases)}\label{baseline-prompt-all-cases}
+
+Generate a slow-motion scientific visualization of brittle fracture for the following scenario: {[}CASE DESCRIPTION{]}. Start with an intact specimen and show impact, crack initiation, progressive crack growth, branching and the final damaged state. Keep the camera fixed with a clear view of the impacted surface and preserve the specimen geometry and material appearance across frames. Show physically plausible fragmentation without spontaneous crack healing or fragment reconnection. This is an exploratory visualization, not a time-calibrated mechanical simulation.
+
+\subsection{Case descriptions (insert into both prompts)}\label{case-descriptions-insert-into-both-prompts}
+
+Case 1: Al\textsubscript{2}O\textsubscript{3} plate, 70 \(\times\) 70 \(\times\) 10 mm; edge-on impact by a rigid cylinder, diameter 16 mm, height 21 mm, velocity 85 m/s; free boundaries.
+
+Case 2: Al\textsubscript{2}O\textsubscript{3} plate, 70 \(\times\) 70 \(\times\) 9 mm; central normal impact by a rigid steel sphere, diameter 6.4 mm, velocity 200 m/s; free boundaries.
+
+Case 3: SiC plate, 60 \(\times\) 60 \(\times\) 8 mm; normal impact by a rigid steel cylinder, diameter 10 mm, height 15 mm, velocity 175 m/s; backside constrained in the normal direction.
+
+\subsection{Physics-guided multimodal prompt}\label{physics-guided-multimodal-prompt}
+
+Use the baseline prompt unchanged, then append the following physical context and supply the reference image below as an actual image input (if supported by the generator).
+
+In normalized cubic lattice coordinates, a crystallographic plane satisfies \(hx+ky+lz=d\). Miller indices (hkl) are proportional to reciprocal axis intercepts; zero indices indicate parallel axes and negative indices indicate signed orientations. The attached (100), (110), and (111) diagrams illustrate canonical planes at \(d=1\). These are examples, not an exhaustive set or prescribed crack paths.
+
+\begin{center}
+\includegraphics[width=1.0\linewidth]{miller_prompt_examples.png}
+\end{center}
+
+Reference image: canonical cubic Miller-index demonstrations (Figure 4 of the manuscript).
+
+Assess whether the material has a known crystal structure and lattice orientation before applying crystallographic constraints. Use the cubic rule only for compatible cubic lattices; for non-cubic crystals use the appropriate lattice geometry if known. For polycrystalline materials, apply crystallographic constraints only locally when grain orientation is known. If the crystal structure or orientation is unspecified, do not assign a global Miller index or force the illustrated planes onto the specimen. Instead, generate material- and loading-conditioned brittle fracture with continuous crack development. Do not invent physical parameters or claim numerical mechanical accuracy.
+
+\subsection{Outputs and comparison}\label{outputs-and-comparison}
+
+For each of the three cases, deliver two original videos (baseline and physics-guided), exact prompts, model/version, settings and seed (if available). Extract 6--8 representative frames per run at comparable fracture stages, including the final damaged state.
+
+Prepare a single 3 \(\times\) 3 comparison figure as illustrated below: one row per case, with the published laboratory photograph, baseline final frame and physics-guided final frame in three columns. Use comparable viewpoints and crops. Do not include PD modeling results in the comparison.
+
+\textbf{Baseline VLM:} Use the original conventional, non-physics-informed prompt, following the same prompting strategy used in our previous glass fracture experiments, without additional physical rules, detailed material properties, quantitative loading conditions, Miller-index definitions, or visual reference demonstrations.
+
+\textbf{Physics-guided VLM:} Use the enhanced multimodal prompt provided in Section 2.2, incorporating material properties, loading conditions, textual physical knowledge, and the three Miller-index visual demonstrations, subject to physical applicability.
+
+Keep the same generation model, specimen geometry, camera viewpoint, video duration, and other generation settings for both configurations to ensure a fair comparison.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{fracture_comparison_template.jpg}
+    \caption{Qualitative comparison of experimentally observed
+    and VLM-generated fracture patterns.}
+    \label{fig:fracture_comparison}
+\end{figure*}
+
+
+\section{Introduction}
+Multimodal large language models (MLLMs) generate explanations from images and text, but fluent explanations need not be supported by visual evidence or physical laws. Scientific applications make this distinction particularly important: a plausible description can contain an unjustified material property, a spurious numerical value, or an invalid physical representation.
+Fracture geometry provides a useful testbed. In crystalline solids, cleavage may follow crystallographic planes described by Miller indices \citep{cullity2001,anderson2017}. However, a single global plane is not generally appropriate for polycrystalline, amorphous, heterogeneous, or plastically deformed fracture surfaces. Even when a plane exists, its indices may not be identifiable from an isolated projected fragment.
+We study whether MLLMs can generate scientific explanations that respect both physical applicability and evidential sufficiency. Our starting point is a latent-guided fracture reasoning framework, previously described in \citep{xu2026miller}. The present draft extends that framework toward hallucination assessment through an explicit distinction between invalid and underdetermined hypotheses, counterfactual questions, and claim-level evaluation.
+Beyond static interpretation, we investigate whether generated fracture sequences exhibit plausible physical progression and whether scientific descriptions of those sequences avoid unsupported causal or quantitative claims. Static reasoning and dynamic generation are complementary tests of physical grounding, not necessarily outputs of the same model.
+
+Our proposed contributions are: (1) a scientific hallucination taxonomy separating physical validity from evidence sufficiency; (2) an applicability-aware structured generation protocol; (3) a controlled evaluation design combining geometric and material-specific counterfactuals; and (4) a qualitative analysis of dynamic fracture generation with a proposed temporal grounding evaluation. Existing qualitative observations motivate these contributions; the new quantitative experiments are not yet completed.
+\section{Related Work}
+\paragraph{Multimodal reasoning.} Contrastive visual-language learning and visual instruction tuning enable cross-modal understanding \citep{radford2021,liu2023}. Multimodal reasoning systems can produce explanations and interact with visual evidence \citep{yang2023,gpt4,gemini}. Prior work on preference optimization and OCR-aware reasoning motivates grounding generated claims in observations \citep{xu2026,xuetal2026}. Unlike general visual recognition, our task requires deciding whether the requested scientific representation is meaningful and identifiable.
+\paragraph{Crystallographic fracture.} Miller indices characterize lattice-plane orientation \citep{cullity2001}. Orientation-dependent cleavage is important in single-crystal fracture, including silicon indentation \citep{skalka2021,wasmer2005}. Directional phase-field formulations likewise model anisotropic fracture \citep{clayton2015,shanthraj2017}. These physical models motivate our structured constraints, but our objective is evaluating generated scientific language, not replacing numerical fracture simulation.
+\section{Physical Representation and Task Formulation}
+Let $x=(I,T,Q)$ denote a visual observation, available material and coordinate context, and a question. Let $z=(h,k,l)$ denote a candidate crystallographic plane. In a cubic lattice with known axes, a plane can be represented in normalized coordinates by
+\begin{equation} hx+ky+lz=d. \end{equation}
+Here the coordinate symbols in the equation denote spatial coordinates, and $d$ is the plane offset. For a general lattice, the plane normal is defined through the reciprocal lattice rather than directly by the Cartesian vector $(h,k,l)$.
+The intersection with a unit cube yields a polygon dependent on orientation and offset. Projection and viewpoint further affect its appearance. Consequently, polygon shape alone does not establish a unique Miller index.
+\paragraph{Applicability and identifiability.} We define four response states $a\in\{G,L,N,U\}$: globally applicable and identifiable ($G$), locally applicable but no justified global plane ($L$), physically inapplicable ($N$), and insufficient evidence ($U$). These are response states, not exhaustive material classes. In particular, crystalline materials may belong to $U$ when lattice orientation is unavailable.
+\paragraph{Latent inference.} For identifiable global cases, predict $\hat z=\arg\max_z p(z\mid x,a=G)$. Symmetry-equivalent families should be accepted when the question requests a family rather than an oriented plane.
+\paragraph{Consistency.} For a fragment $I_f$ and candidate plane rendering $I_p$, predict compatible, incompatible, or underdetermined. Compatibility does not imply uniqueness.
+\section{Scientific Hallucination Taxonomy}
+We distinguish errors in observations, physical assumptions, inference, and generated claims. A claim can be physically possible yet unsupported by the available evidence.
+\begin{table}[t]\small\centering
+\begin{tabularx}{\columnwidth}{lX}\toprule
+Category & Example \\ \midrule
+Visual & Invented planar facet \\
+Geometric & Incorrect index under known axes \\
+Material & Unsupported lattice assignment \\
+Physical & Invalid cleavage mechanism \\
+Applicability & Global index for multi-grain fracture \\
+Overgeneration & Exact index despite ambiguity \\
+Temporal & Unsupported event order or motion \\
+\bottomrule\end{tabularx}
+\caption{Proposed claim-level error taxonomy.}\label{tab:taxonomy}
+\end{table}
+Physical invalidity and insufficient evidence must be annotated separately. For instance, a known amorphous glass has no conventional crystal-lattice Miller index, whereas a crystalline fragment with unknown orientation may have a valid local index that cannot be recovered from the image.
+\section{Applicability-Aware Generation}
+We propose factorizing the response into an applicability decision, a structured hypothesis, and a grounded explanation $y$:
+\begin{equation}
+ p(a,z,y\mid x)=p(a\mid x)p(z\mid x,a)p(y\mid x,a,z).
+\end{equation}
+For $N$ and $U$, the system may return a null index; for $L$, it may describe local facets without asserting a global index. A local index should only be emitted if the relevant grain orientation and evidence support it.
+The proposed inference protocol first extracts observable geometry and available metadata, then assesses applicability and identifiability, then proposes an index or abstains. Finally, it verifies the proposed claims against geometric constraints and material context. This is an inference-time protocol; no new trained gating model is claimed.
+\paragraph{Geometric verification.} In controlled synthetic cases, the verifier can intersect candidate planes with cube edges and compare the resulting polygon under the known rendering transformation. If camera or offset is unknown, multiple hypotheses may remain compatible; the verifier must not turn ambiguity into a negative label.
+\paragraph{Language output.} We request a structured response containing observed evidence, applicability state, candidate index or null, explanation, and limitations. This separates directly visible properties from inferred physical mechanisms.
+\section{Experimental Design}
+\subsection{Existing qualitative evaluation}
+The original experiments use few-shot prompting on synthetic fragments, paired 2D--3D configurations, and candidate real-world fracture scenarios. The completed demonstrations discussed here are restricted to synthetic geometry. The prompt asks for a plane index or family and an explanation based on geometry. The supplied source does not report sample counts, exact model versions, decoding settings, or aggregate scores; these must be recovered before a reproducible submission.
+\begin{figure}[t]\centering\includegraphics[width=0.95\linewidth]{figure1.png}\caption{Latent-guided reasoning framework: visual input, candidate plane hypotheses, applicability decision, and geometric interpretation. Reused from the fracture preprint.}\label{fig:cube}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.75\linewidth]{figure2.png}\caption{Labeled synthetic polygon examples from selected cube--plane intersections. Shape alone does not uniquely identify a plane.}\label{fig:fragments}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.95\linewidth]{Picture3.png}\caption{Representative low-index plane orientations in cubic coordinates. The illustration shows plane configurations, not the complete matched/mismatched evaluation pairs.}\label{fig:pairs}\end{figure}
+\subsection{Proposed controlled benchmark}
+Generate exact cube-plane intersections with primitive integer indices, varying offset and camera pose. Include canonical and higher-index planes, matched and mismatched pairs, and ambiguous observations. Retain metadata for ground truth but expose only the context specified by each evaluation condition. Split by underlying geometry before rendering variants to avoid leakage.
+For real images, record material provenance and whether crystallographic orientation or fracture mechanism is independently established. Do not infer ground truth solely from appearance. Where metadata is missing, label the relevant inference as underdetermined.
+\begin{table}[t]\small\centering
+\begin{tabularx}{\columnwidth}{Xr}\toprule
+Proposed evaluation stratum & Target $N$\\\midrule
+Canonical planes & 300\\
+Higher-index planes & 300\\
+Matched pairs & 200\\
+Mismatched pairs & 200\\
+Polycrystalline, amorphous, heterogeneous, ductile & 400\\
+Insufficient evidence & 200\\\midrule
+Total (planned) & 1600\\\bottomrule\end{tabularx}
+\caption{Planning targets, not collected sample counts.}\end{table}
+\subsection{Counterfactual prompts and baselines}
+For the same image, compare neutral questions with misleading premises, such as asking for a specific Miller index of known amorphous glass. Include context removal and incorrect candidate indices. Evaluate direct prompting, reasoning prompting, physical-prior prompting, applicability-aware prompting, and the full protocol with verification. Keep model versions, decoding settings, and test cases fixed across conditions. Record prompt templates and output parsing rules.
+\subsection{Physics-guided multimodal in-context prompting}
+We propose supplying a textual physical prior $P$ and labeled visual demonstrations $\mathcal D=\{(I_i,z_i,r_i)\}_{i=1}^{K}$, where $I_i$ is a reference rendering, $z_i$ its index, and $r_i$ its intercept explanation. Figure~\ref{fig:prompt_examples} shows three canonical demonstrations. The reference image is passed as an actual visual input, followed by the unlabeled target image(s) and task instruction. With $C=(x,P,\mathcal D)$, the response distribution becomes $p(a,z,y\mid C)=p(a\mid C)p(z\mid a,C)p(y\mid a,z,C)$. The demonstrations are not a closed candidate set.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{miller_prompt_examples.png}
+\caption{Proposed visual in-context demonstrations for canonical cubic planes. The shaded polygons are intersections at $d=1$; axis intercepts illustrate the reciprocal-intercept rule. The reference is supplied to the model alongside the target image.}
+\label{fig:prompt_examples}
+\end{figure}
+\paragraph{System prompt (proposed).} \emph{You are a physics-grounded multimodal reasoning system. In normalized cubic coordinates, a plane satisfies $hx+ky+lz=d$. Miller indices are proportional to reciprocal axis intercepts; reduce to a primitive integer ratio for orientation inference. Zero indices indicate parallel axes; negative indices indicate signed orientations. Examine the attached labeled (100), (110), and (111) examples and their intercepts. These are representative, not exhaustive: infer unseen higher and signed indices using the physical rule. For the target image(s), extract observable facets, edges, vertices, axes and intercepts. Assess global or local applicability, physical inapplicability, or insufficient evidence. Infer candidate indices only when supported, and verify compatibility with the observed geometry or paired 2D--3D representation. Account for offset, viewpoint and unknown lattice orientation; polygon shape alone does not uniquely identify an index. Return observable evidence, applicability, candidate indices or null, compatibility, explanation and uncertainty. Do not invent material properties, mechanisms or numerical quantities.}
+\paragraph{Prompt ablation.} Compare direct inference, textual physical priors alone, visual demonstrations alone, combined textual and visual priors, and the full applicability-aware verification protocol. Hold target images and decoding settings fixed. Evaluate canonical demonstrations against held-out higher-index and signed orientations, without exposing target labels or equivalent renderings in the reference set. These prompt configurations are proposed rather than completed experiments.
+\subsection{Metrics}
+Report applicability macro-F1, index accuracy on identifiable cases, consistency accuracy, and coverage. Define physical hallucination rate as the fraction of assessed scientific claims that contradict established physical constraints. Separately report unsupported-claim rate, including unjustified precision. False acceptance is the fraction of invalid or underdetermined requests receiving an unjustified definitive answer; report these two strata separately. False rejection is the fraction of identifiable requests incorrectly refused. Risk--coverage curves should reveal whether abstention improves reliability without excessive refusal. Use paired bootstrap intervals grouped by underlying image and report annotation agreement for claim labels.
+\section{Existing Observations and Planned Results}
+\subsection{Synthetic and cross-representation observations}
+In the original canonical examples, the model associates square fragments with face-aligned planes and triangular fragments with diagonal planes, and rejects selected incompatible fragment--plane pairs. These observations demonstrate plausible responses for the chosen configurations, not unique recovery from arbitrary polygon shapes. Figure~\ref{fig:pairs} provides the reference low-index configurations. The source reports higher-index examples such as $(112)$ and $(102)$; Figure~\ref{fig:higher} illustrates selected signed $(111)$ and $(102)$ orientations. These examples expose difficulty in recovering precise indices; qualitative descriptions of asymmetry do not establish exact orientation.
+
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{Picture4.png}\caption{Selected signed (111)-type and (102)-type plane orientations in cubic coordinates.}\label{fig:higher}\end{figure}
+
+\begin{figure*}[t]\centering\includegraphics[width=0.98\linewidth]{image.png}\caption{\textbf{Qualitative comparison of experimentally observed and 
+VLM-generated fracture patterns under three ceramic impact 
+scenarios: (1) edge-on impact of an alumina plate, 
+(2) normal impact of an alumina plate, and 
+(3) normal impact of a silicon carbide plate. 
+The columns show laboratory experimental observations, 
+baseline generation with conventional prompting, and 
+physics-guided generation incorporating material properties, 
+loading conditions, and applicability-aware Miller-index 
+knowledge. The comparison focuses on crack orientation, 
+branching, fragmentation, and overall fracture morphology 
+rather than quantitative mechanical accuracy.}}\label{fig:regimes}\end{figure*}
+
+
+
+\subsection{Material-dependent scope}
+Ceramic, concrete, ductile metal and amorphous glass are relevant candidate material regimes for future static tests. They motivate local applicability, rejection and uncertainty, but no documented model-output demonstrations are available for these material examples in the present evaluation. We therefore do not report material-specific VLM performance.
+\subsection{Quantitative comparison (pending)}
+\begin{table}[t]\small\centering
+\begin{tabular}{lrrr}\toprule
+Method & F1 & PHR & FAR\\\midrule
+Direct & -- & -- & --\\
+Reasoning & -- & -- & --\\
+Physical prior & -- & -- & --\\
+Applicability & -- & -- & --\\
+Full protocol & -- & -- & --\\\bottomrule\end{tabular}
+\caption{Planned comparison; dashes indicate unmeasured results. PHR: physical hallucination rate; FAR: false acceptance rate.}\end{table}
+The central hypothesis is that applicability-aware generation reduces invalid and unsupported claims while retaining accuracy on identifiable cases. This hypothesis is not established by the existing qualitative results. The planned ablation should isolate the effect of physical context, gating, and verification, including cases where metadata is deliberately withheld.
+
+\section{Dynamic Fracture Generation and Physical Grounding}
+\label{sec:dynamic}
+\paragraph{Task formulation.} Static fracture interpretation asks whether a scientific hypothesis is supported by a visual observation. Dynamic generation instead asks whether a sequence of frames $V=(I_1,\ldots,I_T)$ is consistent with a specified material, object geometry and loading scenario $c$. We distinguish visual plausibility of $V$ from the factual grounding of a language explanation $y$ conditioned on $(V,c)$. A visually plausible sequence does not establish that its underlying mechanics are correct.
+
+\paragraph{Existing generation experiments.} The original experiments prompt generative multimodal systems to synthesize brittle fracture under impact conditions. Two examples are retained here: a water-filled glass sphere impacting a rigid surface and a glass bottle dropped onto concrete. These are generated sequences, not recorded physical experiments or numerical simulations. The original source does not specify the generator version, complete prompts, or sampling settings; these should be recovered for reproducibility.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\linewidth]{glass_ball_fracture.png}
+\caption{Generated fracture progression of a water-filled glass sphere impacting a rigid surface. The montage illustrates approach, impact-associated fragmentation and subsequent debris dispersion. Frame annotations are reproduced from the source and are not calibrated physical time measurements.}
+\label{fig:glassball}
+\end{figure*}
+
+\paragraph{Water-filled glass sphere.} Figure~\ref{fig:glassball} illustrates a transition from an intact sphere to fragmentation and outward dispersion of debris. The original qualitative analysis describes localized fracture near the contact region, rapid fragmentation and loss of structural integrity. These observations are compatible with brittle impact failure, but the frames alone do not establish crack-tip velocity, strain rate, elastic energy release or the coupled fluid--structure dynamics. Water and glass fragments should not be assigned distinct trajectories without sufficient visual evidence.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{glass_bottle_fracture.png}
+\caption{Generated glass bottle fracture sequence showing approach, contact, fragmentation and debris after impact on concrete. The sequence is illustrative rather than a validated fracture simulation.}
+\label{fig:glassbottle}
+\end{figure}
+
+\paragraph{Glass bottle.} Figure~\ref{fig:glassbottle} shows an elongated glass object approaching a rigid surface, followed by fragmentation and an asymmetric debris distribution. The original analysis relates these observations to localized impact and the differing geometry of the bottle. While wall curvature and contact conditions can influence stress concentration, the sequence does not provide stress fields or sufficient evidence to identify the precise initiation mechanism. Both examples concern amorphous glass and therefore do not justify a crystallographic cleavage index.
+
+\paragraph{Proposed temporal hallucination evaluation.} To connect dynamic generation to language grounding, we propose asking VLMs to describe the visible event order, distinguish observations from inferred mechanisms, and reject unsupported numerical or causal claims. Counterfactual prompts can assert fragmentation before contact, a specific crack speed, or a crystallographic cleavage plane. Such claims should be checked against the available frames and material context rather than accepted from the question. Frame-order perturbations provide an additional controlled test. The following rubric is proposed, not an evaluated result.
+\begin{table}[t]
+\small\centering
+\begin{tabularx}{\columnwidth}{lX}\toprule
+Criterion & Assessment \\\midrule
+Event order & Agreement with visible sequence \\
+Temporal continuity & Unsupported disappearance or reappearance \\
+Material grounding & Consistency with supplied material \\
+Causal grounding & Distinguish evidence from mechanism \\
+Overgeneration & Unsupported speed, stress or energy \\
+\bottomrule\end{tabularx}
+\caption{Proposed dynamic grounding rubric. Physical fidelity requires independent reference data.}
+\label{tab:dynamic}
+\end{table}
+For future quantitative evaluation, report event-order accuracy and unsupported-claim rate on annotated sequence descriptions, separately from visual plausibility ratings. Conservation of mass, momentum and energy cannot be verified from these montages alone. The two existing examples motivate this protocol but do not establish mitigation effectiveness or generalization.
+
+\section{Discussion}
+Figure~\ref{fig:regimes} summarizes the original three regimes; the proposed protocol additionally separates insufficient evidence from physical invalidity.
+A scientifically grounded model should distinguish the existence of a physical representation from its recoverability. A planar facet can be geometrically observable without a known crystallographic reference frame. Conversely, a valid local plane does not justify a global description of a heterogeneous fracture. This distinction motivates selective generation rather than forced classification.
+The proposed benchmark also separates physically contradictory statements from claims that are merely unsupported. The latter may be true in the world but are not justified by the input. Both matter in precision-demanding scientific applications. Evaluation should penalize overconfident answers without rewarding blanket abstention. The dynamic examples extend this principle to temporal scientific descriptions: plausible fragmentation does not license precise claims about forces, energy or crack propagation. Static and dynamic tasks therefore share the need to separate observable evidence, admissible physical hypotheses and unsupported specificity.
+\section{Conclusion}
+We formulate scientific hallucination assessment using crystallographic fracture reasoning as a controlled multimodal domain. Existing qualitative observations motivate an applicability-aware protocol that distinguishes global and local representations, invalid premises, and insufficient evidence. The proposed counterfactual benchmark and claim-level metrics provide a route to testing whether structured physical priors improve scientific language generation. The generated glass sphere and bottle sequences further illustrate qualitatively plausible brittle fracture progression and motivate temporal grounding tests. Quantitative validation remains necessary before claiming mitigation effectiveness.
+\section*{Limitations}
+The existing evidence is qualitative, and the proposed benchmark and mitigation experiments have not yet been executed. Synthetic cube intersections are not physical fracture simulations. The two generated fracture sequences lack calibrated physical measurements and independent simulation or experimental references; their qualitative plausibility is not proof of physical accuracy. The proposed real-material static evaluation has not been completed; material metadata, lattice orientation and fracture mechanisms need independent verification. Results in this narrow domain cannot establish general scientific reasoning ability. Image provenance, permissions, model versions, prompts, and annotation procedures must be documented before submission.
+
+\section*{AI Usage Declaration}
+Generative AI tools were used to assist with manuscript
+organization, literature review, and language editing. The authors are responsible for the scientific methodology, experimental results, interpretation, and final manuscript content.
+
+\begin{thebibliography}{99}
+\bibitem[Cullity and Stock(2001)]{cullity2001}
+B. D. Cullity and S. R. Stock (2001).
+\textit{Elements of X-Ray Diffraction} (3rd ed.). Prentice Hall.
+
+\bibitem[Anderson(2017)]{anderson2017}
+T. L. Anderson (2017).
+\textit{Fracture Mechanics: Fundamentals and Applications} (4th ed.). CRC Press.
+
+\bibitem[Radford et al.(2021)]{radford2021}
+A. Radford, J. W. Kim, C. Hallacy, et al. (2021).
+Learning Transferable Visual Models From Natural Language Supervision.
+\textit{International Conference on Machine Learning (ICML)}.
+
+\bibitem[Liu et al.(2023)]{liu2023}
+H. Liu, C. Li, Q. Wu, and Y. J. Lee (2023).
+Visual Instruction Tuning.
+\textit{Advances in Neural Information Processing Systems (NeurIPS)}.
+
+\bibitem[Xu(2026)]{xu2026} Q. Xu (2026).
+Reducing Hallucination in Vision-Language Models via Stage-wise Preference Optimization under Distribution Shift. arXiv:2605.16411 [cs.CV]
+
+\bibitem[Yang et al.(2023)]{yang2023}
+J. Yang, L. Gao, K. Li, et al. (2023).
+MM-ReAct: Prompting ChatGPT for Multimodal Reasoning and Action.
+\textit{International Conference on Machine Learning (ICML)}.
+
+\bibitem[Xu et al.(2026)]{xuetal2026} Q. Xu, Y. Jiang, H. Ren (2026).
+Multilingual OCR-Aware Fine-Tuning and Prompt-Guided Chain-of-Thought Reasoning for Multimodal Large Language Models.
+\textit{arXiv:2605.16409 [cs.CV]}
+
+\bibitem[OpenAI(2023)]{gpt4}
+OpenAI (2023).
+GPT-4 Technical Report.
+\textit{arXiv:2303.08774}.
+
+\bibitem[Google DeepMind(2023)]{gemini}
+Google DeepMind (2023).
+Gemini: A Family of Highly Capable Multimodal Models.
+\textit{arXiv:2312.11805}.
+
+\bibitem[Skalka and Kotoul(2021)]{skalka2021}
+P.~Skalka and M.~Kotoul.
+\newblock Determination of Mechanical and Fracture Properties of Silicon Single Crystal from Indentation Experiments and Finite Element Modelling.
+\newblock \emph{Materials}, 14(22):6864, 2021.
+
+\bibitem[Wasmer et al.(2005)]{wasmer2005}
+K.~Wasmer, C.~Ballif, R.~Gassilloud, C.~Pouvreau, R.~Rabe, J.~Michler, J.-M. Breguet, J.-M. Solletti, A.~Karimi, and D.~Schulz.
+\newblock Cleavage Fracture of Brittle Semiconductors from the Nanometre to the Centimetre Scale.
+\newblock \emph{Advanced Engineering Materials}, 7(5):309--317, 2005.
+
+\bibitem[Clayton and Knap(2015)]{clayton2015}
+J.~D. Clayton and J.~Knap.
+\newblock Phase field modeling of directional fracture in anisotropic polycrystals.
+\newblock \emph{Computational Materials Science}, 98:158--169, 2015.
+
+\bibitem[Shanthraj et al.(2017)]{shanthraj2017}
+P.~Shanthraj, B.~Svendsen, L.~Sharma, F.~Roters, and D.~Raabe.
+\newblock Elasto-viscoplastic phase field modelling of anisotropic cleavage fracture.
+\newblock \emph{Journal of the Mechanics and Physics of Solids}, 99:19--34, 2017.
+
+
+% \bibitem[Xu et al.(2026)]{xu2026miller}
+% Q. Xu, X. Ma, and Y. Jiang. 2026.
+% Miller-Index-Based Latent Crystallographic Fracture Plane Reasoning and Generation with Vision-Language Models.
+% \textit{arXiv:2605.20416}.
+
+
+\end{thebibliography}
+\end{document}
